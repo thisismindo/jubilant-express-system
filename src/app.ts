@@ -3,10 +3,43 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes";
 import urlRoutes from "./routes/url.routes";
 import { apiResponse } from "./libs/response";
+import cors, { CorsOptions } from "cors";
 
 dotenv.config();
 
 const app = express();
+
+const corsOptions: CorsOptions = {
+    origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) => {
+        const allowedOrigins = [
+            "http://localhost"
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: [
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "OPTIONS"
+    ],
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Accept-Language",
+        "Accept-Encoding",
+        "Connection"
+    ],
+    credentials: true,
+};
+
+app.use(cors<Request>(corsOptions));
 
 app.use(express.json());
 
